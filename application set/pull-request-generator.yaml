@@ -1,33 +1,65 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
+  creationTimestamp: '2025-04-03T19:00:54Z'
+  generation: 3
+  managedFields:
+    - apiVersion: argoproj.io/v1alpha1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:generators': {}
+          'f:template':
+            .: {}
+            'f:metadata':
+              .: {}
+              'f:name': {}
+              'f:namespace': {}
+            'f:spec':
+              .: {}
+              'f:destination':
+                .: {}
+                'f:namespace': {}
+                'f:server': {}
+              'f:project': {}
+              'f:source':
+                .: {}
+                'f:path': {}
+                'f:repoURL': {}
+                'f:targetRevision': {}
+              'f:syncPolicy':
+                .: {}
+                'f:syncOptions': {}
+      manager: Mozilla
+      operation: Update
+      time: '2025-04-03T19:06:17Z'
   name: webapp-review
-  namespace: argocd
+  namespace: openshift-gitops-operator
+  resourceVersion: '77768'
+  uid: a6c5f23d-6d62-4493-931d-782b6ea2e897
 spec:
   generators:
-  - pullRequest:
-      github:
-        # The GitHub organization or user.
-        owner: mabusaa
-        # The Github repository
-        repo: argocd-course-webapp
-        # Labels is used to filter the PRs that you want to target. (optional)
-        labels:
-        - preview
-      requeueAfterSeconds: 90
+    - pullRequest:
+        github:
+          labels:
+            - preview
+          owner: Marian199666
+          repo: argocd-course-webapp
+        requeueAfterSeconds: 90
   template:
     metadata:
       name: 'webapp-{{branch}}-{{number}}'
-      namespace: argocd
+      namespace: openshift-gitops-operator
     spec:
-      source:
-        repoURL: 'https://github.com/mabusaa/argocd-course-webapp.git'
-        targetRevision: '{{head_sha}}'
-        path: helm/webapp
-      project: "default"
       destination:
-        server: https://kubernetes.default.svc
-        namespace: webapp-{{branch}}-{{number}}
+        namespace: 'webapp-{{branch}}-{{number}}'
+        server: 'https://kubernetes.default.svc'
+      project: default
+      source:
+        path: helm/webapp
+        repoURL: 'https://github.com/Marian199666/argocd-course-webapp.git'
+        targetRevision: '{{head_sha}}'
       syncPolicy:
-         syncOptions:
+        syncOptions:
           - CreateNamespace=true
